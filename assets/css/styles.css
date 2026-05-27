@@ -88,6 +88,57 @@ address { font-style: normal; }
   line-height: 1.7;
 }
 
+/* ── Logo header / footer ── */
+.header-logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+@media (min-width: 640px) {
+  .header-logo-img { height: 42px; }
+}
+
+.footer-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* ── Hero photo wrap ── */
+.hero-photo-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+}
+.hero-photo {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-lg);
+  display: block;
+  object-fit: cover;
+  max-height: 520px;
+  object-position: top center;
+  box-shadow: var(--shadow-lg);
+}
+.hero-photo-wrap .stats-card {
+  position: absolute;
+  bottom: -1.5rem;
+  left: -1.5rem;
+  right: auto;
+  width: calc(100% + 1rem);
+  max-width: 340px;
+}
+@media (max-width: 1023px) {
+  .hero-photo-wrap .stats-card {
+    position: static;
+    margin-top: 1rem;
+    max-width: 100%;
+  }
+  .hero-photo { max-height: 320px; }
+}
+
 /* ════════════════════════════════════════════
    PARCEIROS
 ════════════════════════════════════════════ */
@@ -114,15 +165,22 @@ address { font-style: normal; }
   gap: 1.25rem 2.5rem;
 }
 .parceiro-item {
-  font-family: var(--ff-display);
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--c-muted);
-  opacity: .65;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: .6;
   transition: opacity var(--trans);
-  letter-spacing: .02em;
 }
 .parceiro-item:hover { opacity: 1; }
+.parceiro-item img {
+  height: 36px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+@media (min-width: 640px) {
+  .parceiro-item img { height: 44px; }
+}
 
 /* ════════════════════════════════════════════
    SERVIÇOS

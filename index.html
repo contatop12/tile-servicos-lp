@@ -39,6 +39,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 
+  <!-- Preload assets LCP -->
+  <link rel="preload" as="image" href="assets/img/logo-branco.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/img/hero-img-1.webp" fetchpriority="high">
+
   <!-- JSON-LD 1: AccountingService / LocalBusiness -->
   <script type="application/ld+json">
   {
@@ -345,15 +349,11 @@
   <header class="site-header" role="banner">
     <div class="container">
       <a href="https://tileservicos.com.br/" class="header-logo" aria-label="Tile Serviços – página inicial">
-        <!-- CONFIRMAR: substituir por logo SVG real -->
-        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-          <rect width="36" height="36" rx="8" fill="#C9952A"/>
-          <path d="M10 12h16M18 12v12M10 24h8" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-        </svg>
-        <span class="header-logo-text">
-          Tile Serviços
-          <span class="header-logo-sub">Administrativos</span>
-        </span>
+        <img src="assets/img/logo-branco.webp"
+             alt="Tile Serviços Administrativos"
+             width="160" height="42"
+             class="header-logo-img"
+             fetchpriority="high">
       </a>
       <div class="header-right">
         <a href="tel:+551126154071" class="header-phone" aria-label="Ligar para (11) 2615-4071">
@@ -403,24 +403,31 @@
             </div>
           </div>
 
-          <div class="hero-visual" aria-hidden="true">
-            <div class="stats-card">
-              <div class="stat-item">
-                <span class="stat-number">10+</span>
-                <span class="stat-label">Anos no mercado</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-number">30+</span>
-                <span class="stat-label">Anos de experiência somada</span>
-              </div>
-              <div class="stat-divider"></div>
-              <div class="stat-item">
-                <span class="stat-number">CRC</span>
-                <span class="stat-label">1SP224153/O-4</span>
-              </div>
-              <div class="stat-item">
-                <span class="stat-number">2015</span>
-                <span class="stat-label">Fundação do escritório</span>
+          <div class="hero-visual">
+            <div class="hero-photo-wrap">
+              <img src="assets/img/hero-img-1.webp"
+                   alt="Profissionais da Tile Serviços – contabilidade na Barra Funda"
+                   width="717" height="1024"
+                   class="hero-photo"
+                   fetchpriority="high">
+              <div class="stats-card" aria-hidden="true">
+                <div class="stat-item">
+                  <span class="stat-number">10+</span>
+                  <span class="stat-label">Anos no mercado</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">30+</span>
+                  <span class="stat-label">Anos de experiência somada</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-item">
+                  <span class="stat-number">CRC</span>
+                  <span class="stat-label">1SP224153/O-4</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">2015</span>
+                  <span class="stat-label">Fundação do escritório</span>
+                </div>
               </div>
             </div>
           </div>
@@ -436,16 +443,33 @@
       <div class="container">
         <p class="parceiros-label">Empresas que confiam na Tile Serviços</p>
         <div class="parceiros-grid" role="list">
-          <!-- CONFIRMAR: substituir por logos PNG/SVG com fundo transparente -->
-          <div class="parceiro-item" role="listitem">Unopar</div>
-          <div class="parceiro-item" role="listitem">Crya</div>
-          <div class="parceiro-item" role="listitem">Univip</div>
-          <div class="parceiro-item" role="listitem">Ativia</div>
-          <div class="parceiro-item" role="listitem">UBM</div>
-          <div class="parceiro-item" role="listitem">FAC</div>
-          <div class="parceiro-item" role="listitem">Rock</div>
-          <div class="parceiro-item" role="listitem">Pascali</div>
-          <div class="parceiro-item" role="listitem">HSF</div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/unopar.webp" alt="Unopar" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/crya.webp" alt="Crya" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/univip.webp" alt="Univip SP" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/ativia.webp" alt="Ativia" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/ubm.webp" alt="UBM" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/fac.webp" alt="FAC" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/rock.webp" alt="Rock" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/pascali.webp" alt="Pascali" height="40" loading="lazy">
+          </div>
+          <div class="parceiro-item" role="listitem">
+            <img src="assets/img/logos-parceiros/hsf.webp" alt="HSF" height="40" loading="lazy">
+          </div>
         </div>
       </div>
     </section>
@@ -792,7 +816,11 @@
     <div class="container">
       <div class="footer-inner">
         <div class="footer-brand">
-          <p class="footer-brand-name">Tile Serviços Administrativos</p>
+          <img src="assets/img/logo-branco.webp"
+               alt="Tile Serviços Administrativos"
+               width="180" height="47"
+               class="footer-logo"
+               loading="lazy">
           <p class="footer-brand-desc">Escritório de contabilidade, consultoria tributária e BPO financeiro na Barra Funda, São Paulo.</p>
           <address class="footer-nap">
             <span>Rua Dr. Alfredo de Castro, 200 — Barra Funda, São Paulo – SP, 01155-060</span><br>
