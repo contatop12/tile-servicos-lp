@@ -1,2 +1,2 @@
-# www → apex (configurar também no DNS Cloudflare)
-https://www.lp.tileservicos.com.br/* https://lp.tileservicos.com.br/:splat 301
+# Redirects de www são feitos no DNS Cloudflare, não aqui
+# Workers Assets só aceita URLs relativas
