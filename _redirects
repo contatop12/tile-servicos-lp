@@ -1,0 +1,2 @@
+# www → apex (configurar também no DNS Cloudflare)
+https://www.lp.tileservicos.com.br/* https://lp.tileservicos.com.br/:splat 301
