@@ -244,17 +244,25 @@ address { font-style: normal; }
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 .marquee-track {
-  display: flex; align-items: center; gap: 4rem; width: max-content;
-  animation: marquee-scroll 42s linear infinite;
+  display: flex; align-items: center; width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+  will-change: transform;
 }
 .marquee:hover .marquee-track { animation-play-state: paused; }
-.marquee-item { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+/* largura fixa + margin (não gap) => caixas uniformes, loop -50% exato e estável c/ lazy-load */
+.marquee-item {
+  flex: 0 0 auto; width: 150px; margin-right: 3rem;
+  display: flex; align-items: center; justify-content: center;
+}
 .marquee-item img {
-  height: 46px; width: auto; max-width: 170px; object-fit: contain;
-  filter: grayscale(1); opacity: .55; transition: filter var(--trans), opacity var(--trans);
+  height: 44px; width: auto; max-width: 100%; object-fit: contain;
+  filter: grayscale(1); opacity: .6; transition: filter var(--trans), opacity var(--trans);
 }
 .marquee-item img:hover { filter: grayscale(0); opacity: 1; }
-@media (min-width: 768px) { .marquee-item img { height: 56px; } }
+@media (min-width: 768px) {
+  .marquee-item { width: 185px; }
+  .marquee-item img { height: 54px; }
+}
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
