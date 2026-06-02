@@ -82,15 +82,18 @@
   }
 
   /* ─── Modal WA lead capture ──────────────────────────────────── */
-  var _pendingWAUrl = null;
+  var WA_BASE = 'https://api.whatsapp.com/send/?phone=5511911794902';
+  var _pendingWABase = WA_BASE;
+  var _lastFocus = null;
 
-  function openModal(waUrl) {
+  function openModal(base) {
     const modal = document.getElementById('wa-modal');
     if (!modal) return;
-    _pendingWAUrl = waUrl || 'https://wa.me/5511911794902';
+    _pendingWABase = base || WA_BASE;
+    _lastFocus = document.activeElement;
     modal.hidden = false;
     document.body.classList.add('modal-open');
-    const first = modal.querySelector('input');
+    const first = modal.querySelector('#f-nome');
     if (first) setTimeout(function () { first.focus(); }, 60);
   }
 
@@ -99,14 +102,27 @@
     if (!modal) return;
     modal.hidden = true;
     document.body.classList.remove('modal-open');
-    _pendingWAUrl = null;
+    if (_lastFocus && _lastFocus.focus) { try { _lastFocus.focus(); } catch (_) {} }
+  }
+
+  // Monta a mensagem do WhatsApp com os dados do lead
+  function buildLeadMessage(d) {
+    const utms = getStoredUTMs();
+    const source = utms.utm_source || (utms.gclid && 'google') || (utms.fbclid && 'meta') || 'site';
+    return 'Olá! Vim do ' + source + ' e quero falar com a Tile Serviços.\n\n'
+      + '• Nome: ' + d.nome + '\n'
+      + '• Empresa: ' + d.empresa + '\n'
+      + '• E-mail: ' + d.email + '\n'
+      + '• Telefone: ' + d.telefone + '\n'
+      + '• Porte: ' + d.porte + '\n'
+      + '• Segmento: ' + d.segmento;
   }
 
   function initWAModal() {
     const modal = document.getElementById('wa-modal');
     if (!modal) return;
 
-    // Intercept WA button clicks → open modal
+    // Intercepta cliques nos botões de WhatsApp → abre modal
     document.querySelectorAll('.js-open-wa-modal').forEach(function (el) {
       el.addEventListener('click', function (e) {
         e.preventDefault();
@@ -117,7 +133,7 @@
       });
     });
 
-    // Close triggers
+    // Fechar
     modal.querySelectorAll('.js-modal-close').forEach(function (el) {
       el.addEventListener('click', closeModal);
     });
@@ -125,30 +141,43 @@
       if (e.key === 'Escape' && !modal.hidden) closeModal();
     });
 
-    // Form
-    const form = modal.querySelector('#contato-form');
+    const form = modal.querySelector('#lead-form');
     if (!form) return;
 
     const fields = {
       nome:     { el: form.querySelector('#f-nome'),     errEl: form.querySelector('#f-nome-err') },
-      whatsapp: { el: form.querySelector('#f-whatsapp'), errEl: form.querySelector('#f-whatsapp-err') },
-      lgpd:     { el: form.querySelector('#f-lgpd'),     errEl: form.querySelector('#f-lgpd-err') },
+      empresa:  { el: form.querySelector('#f-empresa'),  errEl: form.querySelector('#f-empresa-err') },
+      email:    { el: form.querySelector('#f-email'),    errEl: form.querySelector('#f-email-err') },
+      telefone: { el: form.querySelector('#f-telefone'), errEl: form.querySelector('#f-telefone-err') },
+      porte:    { errEl: form.querySelector('#f-porte-err') },
+      segmento: { el: form.querySelector('#f-segmento'), errEl: form.querySelector('#f-segmento-err') }
     };
 
-    function validateNome(v)     { return v.trim().length >= 2 ? '' : 'Informe seu nome completo.'; }
-    function validateWhatsapp(v) {
+    function validateTexto(v, msg) { return v.trim().length >= 2 ? '' : msg; }
+    function validateEmail(v) {
+      v = v.trim();
+      if (!v) return 'Informe seu e-mail.';
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'E-mail inválido.';
+    }
+    function validateTelefone(v) {
       const d = v.replace(/\D/g, '');
-      if (!d) return 'Informe seu WhatsApp.';
+      if (!d) return 'Informe seu telefone.';
       if (d.length < 10 || d.length > 11) return 'Número inválido. Ex.: (11) 91234-5678.';
       return '';
     }
-    function validateLGPD(c)     { return c ? '' : 'É necessário aceitar para enviar.'; }
+    function getPorte() {
+      const checked = form.querySelector('input[name="porte"]:checked');
+      return checked ? checked.value : '';
+    }
+    function validatePorte() { return getPorte() ? '' : 'Selecione o porte da empresa.'; }
 
     function setError(field, msg) {
-      field.errEl.textContent = msg;
-      field.el.classList.toggle('is-invalid', !!msg);
-      if (msg) field.el.setAttribute('aria-invalid', 'true');
-      else field.el.removeAttribute('aria-invalid');
+      if (field.errEl) field.errEl.textContent = msg;
+      if (field.el) {
+        field.el.classList.toggle('is-invalid', !!msg);
+        if (msg) field.el.setAttribute('aria-invalid', 'true');
+        else field.el.removeAttribute('aria-invalid');
+      }
     }
 
     function formatPhone(el) {
@@ -163,81 +192,55 @@
       el.value = v;
     }
 
-    fields.nome.el.addEventListener('blur', function () { setError(fields.nome, validateNome(this.value)); });
-    fields.whatsapp.el.addEventListener('blur', function () { setError(fields.whatsapp, validateWhatsapp(this.value)); });
-    fields.whatsapp.el.addEventListener('input', function () { formatPhone(this); });
+    fields.nome.el.addEventListener('blur', function () { setError(fields.nome, validateTexto(this.value, 'Informe seu nome.')); });
+    fields.empresa.el.addEventListener('blur', function () { setError(fields.empresa, validateTexto(this.value, 'Informe o nome da empresa.')); });
+    fields.email.el.addEventListener('blur', function () { setError(fields.email, validateEmail(this.value)); });
+    fields.telefone.el.addEventListener('blur', function () { setError(fields.telefone, validateTelefone(this.value)); });
+    fields.telefone.el.addEventListener('input', function () { formatPhone(this); });
+    fields.segmento.el.addEventListener('blur', function () { setError(fields.segmento, validateTexto(this.value, 'Informe o segmento/nicho.')); });
+    form.querySelectorAll('input[name="porte"]').forEach(function (r) {
+      r.addEventListener('change', function () { setError(fields.porte, validatePorte()); });
+    });
 
     function validateAll() {
-      const e0 = validateNome(fields.nome.el.value);
-      const e1 = validateWhatsapp(fields.whatsapp.el.value);
-      const e2 = validateLGPD(fields.lgpd.el.checked);
-      setError(fields.nome, e0);
-      setError(fields.whatsapp, e1);
-      setError(fields.lgpd, e2);
-      return !e0 && !e1 && !e2;
-    }
-
-    const btnSubmit  = form.querySelector('#btn-submit');
-    const btnText    = btnSubmit && btnSubmit.querySelector('.btn-text');
-    const btnLoading = btnSubmit && btnSubmit.querySelector('.btn-loading');
-    const feedback   = form.querySelector('#form-feedback');
-
-    function setLoading(on) {
-      if (!btnSubmit) return;
-      btnSubmit.disabled = on;
-      if (btnText)    btnText.hidden    = on;
-      if (btnLoading) btnLoading.hidden = !on;
-    }
-
-    function showFeedback(msg, type) {
-      if (!feedback) return;
-      feedback.textContent = msg;
-      feedback.className = 'form-feedback is-' + type;
-      feedback.hidden = false;
+      const errs = {
+        nome:     validateTexto(fields.nome.el.value, 'Informe seu nome.'),
+        empresa:  validateTexto(fields.empresa.el.value, 'Informe o nome da empresa.'),
+        email:    validateEmail(fields.email.el.value),
+        telefone: validateTelefone(fields.telefone.el.value),
+        porte:    validatePorte(),
+        segmento: validateTexto(fields.segmento.el.value, 'Informe o segmento/nicho.')
+      };
+      Object.keys(errs).forEach(function (k) { setError(fields[k], errs[k]); });
+      return !Object.keys(errs).some(function (k) { return errs[k]; });
     }
 
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!validateAll()) {
-        const firstErr = form.querySelector('.is-invalid');
+        const firstErr = form.querySelector('.is-invalid') || form.querySelector('input[name="porte"]');
         if (firstErr) firstErr.focus();
         return;
       }
 
-      setLoading(true);
-      const nome  = fields.nome.el.value.trim();
-      const utms  = getStoredUTMs();
-      const data  = new FormData(form);
-      Object.keys(utms).forEach(function (k) { data.append(k, utms[k]); });
+      const data = {
+        nome:     fields.nome.el.value.trim(),
+        empresa:  fields.empresa.el.value.trim(),
+        email:    fields.email.el.value.trim(),
+        telefone: fields.telefone.el.value.trim(),
+        porte:    getPorte(),
+        segmento: fields.segmento.el.value.trim()
+      };
 
-      const action = form.getAttribute('action');
+      let url;
+      try { url = new URL(_pendingWABase); }
+      catch (_) { url = new URL(WA_BASE); }
+      url.searchParams.set('text', buildLeadMessage(data));
 
-      function finish() {
-        pushEvent('form_submit', { form_name: 'contato_lp_modal' });
-        closeModal();
-        form.reset();
-        window.open(buildWAUrl(_pendingWAUrl || 'https://wa.me/5511911794902', nome), '_blank', 'noopener,noreferrer');
-      }
-
-      if (!action) {
-        setTimeout(function () { setLoading(false); finish(); }, 600);
-        return;
-      }
-
-      fetch(action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } })
-        .then(function (res) {
-          setLoading(false);
-          if (res.ok) { finish(); }
-          else {
-            showFeedback('Erro ao enviar. Abrindo WhatsApp...', 'error');
-            setTimeout(finish, 1500);
-          }
-        })
-        .catch(function () {
-          setLoading(false);
-          showFeedback('Sem conexão. Abrindo WhatsApp...', 'error');
-          setTimeout(finish, 1500);
-        });
+      pushEvent('form_submit', { form_name: 'lead_wa_modal', porte: data.porte });
+      closeModal();
+      form.reset();
+      window.open(url.toString(), '_blank', 'noopener,noreferrer');
     });
   }
 
@@ -322,7 +325,7 @@
 
   /* ─── Reveal classes ─────────────────────────────────────────── */
   function addRevealClasses() {
-    ['.servico-card','.diferencial-item','.step-item','.faq-item','.section-header','.capsule-inner','.cta-final-inner']
+    ['.section-header','.hero-stat','.segmento-card','.servico-card','.diferencial-item','.dif-photo','.depoimento-card','.faq-item','.cta-strip','.cta-final-inner','.segmentos-cta']
       .forEach(function (sel) {
         document.querySelectorAll(sel).forEach(function (el, i) {
           el.classList.add('reveal');

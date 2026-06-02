@@ -1,2 +1,6 @@
 # Redirects de www são feitos no DNS Cloudflare, não aqui
 # Workers Assets só aceita URLs relativas
+
+# Raiz → landing page (rota com keyword)
+/                              /contabilidade-na-barra-funda  301
+/index.html                    /contabilidade-na-barra-funda  301
