@@ -3,12 +3,3 @@ compatibility_date = "2025-05-27"
 
 [assets]
 directory = "."
-exclude = [
-  ".git/**",
-  ".wrangler/**",
-  "node_modules/**",
-  "plano-implementacao-tile.md",
-  "prompt-landing-tile.md",
-  "wrangler.toml",
-  ".gitignore"
-]

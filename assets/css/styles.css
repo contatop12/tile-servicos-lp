@@ -682,11 +682,12 @@ body.modal-open { overflow: hidden; }
   .section-header { margin-bottom: 4rem; }
 }
 
-/* ── Text wrap balance ── */
+/* ── Text wrap balance (global, todos os viewports — não é mobile-only) ── */
 .text-balance { text-wrap: balance; }
-.hero h1, .section-header h2, .cta-content h2, .cta-strip-text,
-.modal-header h2, .seg-head h3, .servico-card h3, .diferencial-item h3,
-.clientes-title, .depoimento-card blockquote { text-wrap: balance; }
+h1, h2, h3, h4, h5, h6,
+p, li, blockquote, figcaption,
+label, legend, summary,
+.hero-sub, .section-sub, .cta-strip-text { text-wrap: balance; }
 
 /* ── Utilitários ── */
 .visually-hidden {

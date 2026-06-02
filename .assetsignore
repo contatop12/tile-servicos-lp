@@ -1,0 +1,16 @@
+# Imagens-fonte de alta resolução — o site usa as versões .webp otimizadas
+assets/img/socios-tile-servicos-contabilidade.png
+assets/img/socios-tile-servicos-contabilidade-v2.png
+assets/img/socios-tile-servicos-contabilidade-hero.jpg
+
+# Fotos não usadas na landing (mantidas no repo, fora do deploy)
+assets/img/Edson
+
+# Dev / docs / config
+plano-implementacao-tile.md
+prompt-landing-tile.md
+wrangler.toml
+.gitignore
+.git
+.wrangler
+node_modules
