@@ -46,3 +46,6 @@ yarn.lock
 # Docs internos de planejamento
 plano-implementacao-tile.md
 prompt-landing-tile.md
+
+.dev.vars*
+!.dev.vars.example
