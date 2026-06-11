@@ -83,8 +83,34 @@
 
   /* ─── Modal WA lead capture ──────────────────────────────────── */
   var WA_BASE = 'https://api.whatsapp.com/send/?phone=5511911794902';
+  var LEAD_WEBHOOK = 'https://n8n.sitespdoze.com.br/webhook/contabilidade';
   var _pendingWABase = WA_BASE;
   var _lastFocus = null;
+
+  function sendLeadWebhook(data) {
+    var utms = getStoredUTMs();
+    var payload = {
+      nome: data.nome,
+      empresa: data.empresa,
+      email: data.email,
+      telefone: data.telefone,
+      porte: data.porte,
+      segmento: data.segmento,
+      ajuda: data.ajuda,
+      timestamp: new Date().toISOString(),
+      page_url: window.location.href,
+      utm_source: utms.utm_source || '',
+      utm_medium: utms.utm_medium || '',
+      utm_campaign: utms.utm_campaign || ''
+    };
+
+    fetch(LEAD_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).catch(function () {});
+  }
 
   function openModal(base) {
     const modal = document.getElementById('wa-modal');
@@ -285,6 +311,7 @@
       url.searchParams.set('text', buildLeadMessage(data));
 
       pushEvent('form_submit', { form_name: 'lead_wa_modal', porte: data.porte, ajuda: data.ajuda });
+      sendLeadWebhook(data);
       closeModal();
       form.reset();
       toggleAjudaOutro();

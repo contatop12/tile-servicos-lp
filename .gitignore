@@ -16,9 +16,16 @@ Desktop.ini
 *.sw?
 *~
 
-# Cloudflare / Wrangler
+# Cloudflare / Wrangler (legado)
 .wrangler/
 .dev.vars
+wrangler.toml
+.assetsignore
+_redirects
+_headers
+
+# Vercel
+.vercel
 
 # Node (se npm for adicionado futuramente)
 node_modules/
