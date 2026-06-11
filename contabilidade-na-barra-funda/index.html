@@ -40,7 +40,8 @@
 
   <!-- Preload assets LCP -->
   <link rel="preload" as="image" href="/assets/img/logo-branco.webp" fetchpriority="high">
-  <link rel="preload" as="image" href="/assets/img/socios-tile-servicos-contabilidade-v2.webp" fetchpriority="high">
+  <link rel="preload" as="image" href="/assets/img/socios-tile-servicos-contabilidade-hero-mobile.webp" media="(max-width: 1023px)" fetchpriority="high">
+  <link rel="preload" as="image" href="/assets/img/socios-tile-servicos-contabilidade-v2.webp" media="(min-width: 1024px)" fetchpriority="high">
 
   <!-- JSON-LD 1: AccountingService / LocalBusiness -->
   <script type="application/ld+json">
@@ -383,9 +384,12 @@
 
           <div class="hero-visual">
             <div class="hero-photo-frame">
-              <img src="/assets/img/socios-tile-servicos-contabilidade-v2.webp"
-                   alt="Os três sócios da Tile Serviços, contabilidade na Barra Funda, em São Paulo"
-                   width="1100" height="1473" fetchpriority="high">
+              <picture>
+                <source media="(min-width: 1024px)" srcset="/assets/img/socios-tile-servicos-contabilidade-v2.webp" type="image/webp">
+                <img src="/assets/img/socios-tile-servicos-contabilidade-hero-mobile.webp"
+                     alt="Os três sócios da Tile Serviços, contabilidade na Barra Funda, em São Paulo"
+                     width="1100" height="619" fetchpriority="high">
+              </picture>
               <span class="hero-photo-badge">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
                 CRC 1SP224153/O-4
