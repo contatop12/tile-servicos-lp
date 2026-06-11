@@ -892,8 +892,8 @@
       </button>
       <div class="modal-header">
         <span class="modal-eyebrow">Atendimento via WhatsApp</span>
-        <h2 id="wa-modal-title">Vamos falar sobre a sua empresa</h2>
-        <p>Preencha os dados abaixo e continue a conversa direto no WhatsApp com um especialista da Tile.</p>
+        <h2 id="wa-modal-title">Fale com um especialista em contabilidade</h2>
+        <p>Receba orientação personalizada pelo WhatsApp em poucos minutos.</p>
       </div>
 
       <form id="lead-form" class="lead-form" novalidate>
@@ -924,10 +924,22 @@
         <fieldset class="form-group form-fieldset" aria-describedby="f-porte-err">
           <legend>Em qual dessas opções sua empresa se enquadra? <span aria-hidden="true">*</span></legend>
           <div class="porte-options">
-            <label class="porte-chip"><input type="radio" name="porte" value="Micro Empresa"><span>Micro Empresa</span></label>
-            <label class="porte-chip"><input type="radio" name="porte" value="Pequena Empresa"><span>Pequena Empresa</span></label>
-            <label class="porte-chip"><input type="radio" name="porte" value="Média Empresa"><span>Média Empresa</span></label>
-            <label class="porte-chip"><input type="radio" name="porte" value="Grande Empresa"><span>Grande Empresa</span></label>
+            <label class="porte-chip">
+              <input type="radio" name="porte" value="MEI: Até R$ 81 mil/ano">
+              <span><strong>MEI</strong><small>Até R$ 81 mil/ano</small></span>
+            </label>
+            <label class="porte-chip">
+              <input type="radio" name="porte" value="ME: Até R$ 360 mil/ano">
+              <span><strong>ME</strong><small>Até R$ 360 mil/ano</small></span>
+            </label>
+            <label class="porte-chip">
+              <input type="radio" name="porte" value="EPP: Até R$ 4,8MM/ano">
+              <span><strong>EPP</strong><small>Até R$ 4,8MM/ano</small></span>
+            </label>
+            <label class="porte-chip">
+              <input type="radio" name="porte" value="Média / Grande: + de R$ 4,8MM/ano">
+              <span><strong>Média / Grande</strong><small>+ de R$ 4,8MM/ano</small></span>
+            </label>
           </div>
           <span class="field-error" id="f-porte-err" role="alert" aria-live="polite"></span>
         </fieldset>
@@ -937,6 +949,25 @@
           <input type="text" id="f-segmento" name="segmento" required maxlength="120" placeholder="Ex.: clínica médica, e-commerce, advocacia…" aria-required="true" aria-describedby="f-segmento-err">
           <span class="field-error" id="f-segmento-err" role="alert" aria-live="polite"></span>
         </div>
+
+        <fieldset class="form-group form-fieldset" aria-describedby="f-ajuda-err">
+          <legend>Como podemos ajudar? <span aria-hidden="true">*</span></legend>
+          <div class="ajuda-options">
+            <label class="ajuda-chip"><input type="checkbox" name="ajuda" value="Abrir empresa"><span>Abrir empresa</span></label>
+            <label class="ajuda-chip"><input type="checkbox" name="ajuda" value="Trocar de contador"><span>Trocar de contador</span></label>
+            <label class="ajuda-chip"><input type="checkbox" name="ajuda" value="BPO Financeiro"><span>BPO Financeiro</span></label>
+            <label class="ajuda-chip"><input type="checkbox" name="ajuda" value="Consultoria Tributária"><span>Consultoria Tributária</span></label>
+            <label class="ajuda-chip"><input type="checkbox" name="ajuda" value="Holding Familiar"><span>Holding Familiar</span></label>
+            <label class="ajuda-chip"><input type="checkbox" name="ajuda" value="Regularização"><span>Regularização</span></label>
+            <label class="ajuda-chip ajuda-chip--outro"><input type="checkbox" name="ajuda" value="Outro" id="f-ajuda-outro-check"><span>Outro</span></label>
+          </div>
+          <div class="ajuda-outro-wrap" id="ajuda-outro-wrap" hidden>
+            <label for="f-ajuda-outro">Descreva como podemos ajudar <span aria-hidden="true">*</span></label>
+            <input type="text" id="f-ajuda-outro" name="ajuda_outro" maxlength="200" placeholder="Conte brevemente o que você precisa" aria-describedby="f-ajuda-outro-err">
+            <span class="field-error" id="f-ajuda-outro-err" role="alert" aria-live="polite"></span>
+          </div>
+          <span class="field-error" id="f-ajuda-err" role="alert" aria-live="polite"></span>
+        </fieldset>
 
         <button type="submit" class="btn-lead-submit">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.136.565 4.136 1.543 5.873L.057 23.5l5.77-1.512A11.957 11.957 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.013-1.374l-.36-.214-3.727.977.998-3.629-.234-.373A9.818 9.818 0 0112 2.182c5.421 0 9.818 4.397 9.818 9.818S17.421 21.818 12 21.818z"/></svg>

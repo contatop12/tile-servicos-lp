@@ -115,7 +115,8 @@
       + '• E-mail: ' + d.email + '\n'
       + '• Telefone: ' + d.telefone + '\n'
       + '• Porte: ' + d.porte + '\n'
-      + '• Segmento: ' + d.segmento;
+      + '• Segmento: ' + d.segmento + '\n'
+      + '• Como podemos ajudar: ' + d.ajuda;
   }
 
   function initWAModal() {
@@ -150,8 +151,12 @@
       email:    { el: form.querySelector('#f-email'),    errEl: form.querySelector('#f-email-err') },
       telefone: { el: form.querySelector('#f-telefone'), errEl: form.querySelector('#f-telefone-err') },
       porte:    { errEl: form.querySelector('#f-porte-err') },
-      segmento: { el: form.querySelector('#f-segmento'), errEl: form.querySelector('#f-segmento-err') }
+      segmento: { el: form.querySelector('#f-segmento'), errEl: form.querySelector('#f-segmento-err') },
+      ajuda:    { errEl: form.querySelector('#f-ajuda-err') },
+      ajudaOutro: { el: form.querySelector('#f-ajuda-outro'), errEl: form.querySelector('#f-ajuda-outro-err') }
     };
+    const ajudaOutroWrap = form.querySelector('#ajuda-outro-wrap');
+    const ajudaOutroCheck = form.querySelector('#f-ajuda-outro-check');
 
     function validateTexto(v, msg) { return v.trim().length >= 2 ? '' : msg; }
     function validateEmail(v) {
@@ -170,6 +175,25 @@
       return checked ? checked.value : '';
     }
     function validatePorte() { return getPorte() ? '' : 'Selecione o porte da empresa.'; }
+    function getAjuda() {
+      return Array.from(form.querySelectorAll('input[name="ajuda"]:checked')).map(function (el) { return el.value; });
+    }
+    function validateAjuda() {
+      return getAjuda().length ? '' : 'Selecione ao menos uma opção.';
+    }
+    function validateAjudaOutro() {
+      if (!ajudaOutroCheck || !ajudaOutroCheck.checked) return '';
+      return validateTexto(fields.ajudaOutro.el.value, 'Descreva como podemos ajudar.');
+    }
+    function toggleAjudaOutro() {
+      if (!ajudaOutroWrap || !ajudaOutroCheck) return;
+      const show = ajudaOutroCheck.checked;
+      ajudaOutroWrap.hidden = !show;
+      if (!show) {
+        fields.ajudaOutro.el.value = '';
+        setError(fields.ajudaOutro, '');
+      }
+    }
 
     function setError(field, msg) {
       if (field.errEl) field.errEl.textContent = msg;
@@ -201,6 +225,16 @@
     form.querySelectorAll('input[name="porte"]').forEach(function (r) {
       r.addEventListener('change', function () { setError(fields.porte, validatePorte()); });
     });
+    form.querySelectorAll('input[name="ajuda"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        if (r === ajudaOutroCheck) toggleAjudaOutro();
+        setError(fields.ajuda, validateAjuda());
+        setError(fields.ajudaOutro, validateAjudaOutro());
+      });
+    });
+    fields.ajudaOutro.el.addEventListener('blur', function () {
+      setError(fields.ajudaOutro, validateAjudaOutro());
+    });
 
     function validateAll() {
       const errs = {
@@ -209,16 +243,28 @@
         email:    validateEmail(fields.email.el.value),
         telefone: validateTelefone(fields.telefone.el.value),
         porte:    validatePorte(),
-        segmento: validateTexto(fields.segmento.el.value, 'Informe o segmento/nicho.')
+        segmento: validateTexto(fields.segmento.el.value, 'Informe o segmento/nicho.'),
+        ajuda:    validateAjuda(),
+        ajudaOutro: validateAjudaOutro()
       };
       Object.keys(errs).forEach(function (k) { setError(fields[k], errs[k]); });
       return !Object.keys(errs).some(function (k) { return errs[k]; });
     }
 
+    function formatAjudaMessage() {
+      const selected = getAjuda().filter(function (v) { return v !== 'Outro'; });
+      if (ajudaOutroCheck && ajudaOutroCheck.checked) {
+        selected.push('Outro: ' + fields.ajudaOutro.el.value.trim());
+      }
+      return selected.join(', ');
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!validateAll()) {
-        const firstErr = form.querySelector('.is-invalid') || form.querySelector('input[name="porte"]');
+        const firstErr = form.querySelector('.is-invalid')
+          || form.querySelector('input[name="porte"]')
+          || form.querySelector('input[name="ajuda"]');
         if (firstErr) firstErr.focus();
         return;
       }
@@ -229,7 +275,8 @@
         email:    fields.email.el.value.trim(),
         telefone: fields.telefone.el.value.trim(),
         porte:    getPorte(),
-        segmento: fields.segmento.el.value.trim()
+        segmento: fields.segmento.el.value.trim(),
+        ajuda:    formatAjudaMessage()
       };
 
       let url;
@@ -237,9 +284,10 @@
       catch (_) { url = new URL(WA_BASE); }
       url.searchParams.set('text', buildLeadMessage(data));
 
-      pushEvent('form_submit', { form_name: 'lead_wa_modal', porte: data.porte });
+      pushEvent('form_submit', { form_name: 'lead_wa_modal', porte: data.porte, ajuda: data.ajuda });
       closeModal();
       form.reset();
+      toggleAjudaOutro();
       window.open(url.toString(), '_blank', 'noopener,noreferrer');
     });
   }
