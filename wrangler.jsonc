@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tile-servicos-lp",
+  "compatibility_date": "2026-06-11",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "contabilidade-na-barra-funda"
+  },
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+}
