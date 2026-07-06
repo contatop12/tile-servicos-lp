@@ -81,11 +81,55 @@
     }
   }
 
+  function initFooterPhoneVisibility() {
+    var mobileMq = window.matchMedia('(max-width: 639px)');
+
+    function update() {
+      var show = mobileMq.matches && isBusinessHours();
+      document.querySelectorAll('.js-footer-phone').forEach(function (el) {
+        el.hidden = !show;
+      });
+    }
+
+    update();
+    if (typeof mobileMq.addEventListener === 'function') {
+      mobileMq.addEventListener('change', update);
+    } else if (typeof mobileMq.addListener === 'function') {
+      mobileMq.addListener(update);
+    }
+  }
+
   /* ─── Modal WA lead capture ──────────────────────────────────── */
   var WA_BASE = 'https://api.whatsapp.com/send/?phone=5511911794902';
   var LEAD_WEBHOOK = 'https://n8n.sitespdoze.com.br/webhook/contabilidade';
+  var DISQUALIFY_MEI_URL = '/nao-atendemos-mei';
+  var PHONE_DDI = '55';
   var _pendingWABase = WA_BASE;
   var _lastFocus = null;
+
+  function getNationalPhoneDigits(raw) {
+    var d = String(raw || '').replace(/\D/g, '');
+    if (d.indexOf('55') === 0 && d.length > 11) d = d.slice(2);
+    return d.slice(0, 11);
+  }
+
+  function formatNationalPhone(digits) {
+    if (!digits) return '';
+    if (digits.length <= 2) return '(' + digits;
+    if (digits.length <= 6) return '(' + digits.slice(0, 2) + ') ' + digits.slice(2);
+    if (digits.length <= 10) {
+      return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 6) + '-' + digits.slice(6);
+    }
+    return '(' + digits.slice(0, 2) + ') ' + digits.slice(2, 7) + '-' + digits.slice(7);
+  }
+
+  function formatPhoneWithDDI(nationalDigits) {
+    return '+' + PHONE_DDI + ' ' + formatNationalPhone(nationalDigits);
+  }
+
+  function isMeiPorte(porte) {
+    return String(porte || '').indexOf('MEI') === 0;
+  }
 
   function sendLeadWebhook(data) {
     var utms = getStoredUTMs();
@@ -191,7 +235,7 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'E-mail inválido.';
     }
     function validateTelefone(v) {
-      const d = v.replace(/\D/g, '');
+      const d = getNationalPhoneDigits(v);
       if (!d) return 'Informe seu telefone.';
       if (d.length < 10 || d.length > 11) return 'Número inválido. Ex.: (11) 91234-5678.';
       return '';
@@ -231,15 +275,9 @@
     }
 
     function formatPhone(el) {
-      let v = el.value.replace(/\D/g, '').slice(0, 11);
-      if (v.length > 6) {
-        v = '(' + v.slice(0,2) + ') ' + v.slice(2, v.length > 10 ? 7 : 6) + '-' + v.slice(v.length > 10 ? 7 : 6);
-      } else if (v.length > 2) {
-        v = '(' + v.slice(0,2) + ') ' + v.slice(2);
-      } else if (v.length > 0) {
-        v = '(' + v;
-      }
-      el.value = v;
+      var digits = getNationalPhoneDigits(el.value);
+      var formatted = formatNationalPhone(digits);
+      if (el.value !== formatted) el.value = formatted;
     }
 
     fields.nome.el.addEventListener('blur', function () { setError(fields.nome, validateTexto(this.value, 'Informe seu nome.')); });
@@ -295,27 +333,43 @@
         return;
       }
 
+      const nationalDigits = getNationalPhoneDigits(fields.telefone.el.value);
       const data = {
         nome:     fields.nome.el.value.trim(),
         empresa:  fields.empresa.el.value.trim(),
         email:    fields.email.el.value.trim(),
-        telefone: fields.telefone.el.value.trim(),
+        telefone: formatPhoneWithDDI(nationalDigits),
         porte:    getPorte(),
         segmento: fields.segmento.el.value.trim(),
         ajuda:    formatAjudaMessage()
       };
 
-      let url;
-      try { url = new URL(_pendingWABase); }
-      catch (_) { url = new URL(WA_BASE); }
-      url.searchParams.set('text', buildLeadMessage(data));
+      const isMei = isMeiPorte(data.porte);
 
-      pushEvent('form_submit', { form_name: 'lead_wa_modal', porte: data.porte, ajuda: data.ajuda });
+      let url;
+      if (!isMei) {
+        try { url = new URL(_pendingWABase); }
+        catch (_) { url = new URL(WA_BASE); }
+        url.searchParams.set('text', buildLeadMessage(data));
+      }
+
+      pushEvent('conversion_secondary', {
+        form_name: 'lead_wa_modal',
+        conversion_type: 'secondary',
+        porte: data.porte,
+        ajuda: data.ajuda,
+        disqualified: isMei
+      });
       sendLeadWebhook(data);
       closeModal();
       form.reset();
       toggleAjudaOutro();
-      window.open(url.toString(), '_blank', 'noopener,noreferrer');
+
+      if (isMei) {
+        window.location.href = DISQUALIFY_MEI_URL;
+      } else {
+        window.open(url.toString(), '_blank', 'noopener,noreferrer');
+      }
     });
   }
 
@@ -419,6 +473,7 @@
     initStickyWA();
     initSmoothScroll();
     initPhoneVisibility();
+    initFooterPhoneVisibility();
     initWAModal();
     initCookieBanner();
     initTracking();
