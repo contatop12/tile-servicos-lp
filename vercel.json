@@ -12,6 +12,16 @@
       "source": "/index.html",
       "destination": "/contabilidade-na-barra-funda",
       "permanent": true
+    },
+    {
+      "source": "/whatsapp",
+      "destination": "/contabilidade-na-barra-funda/whatsapp",
+      "permanent": false
+    },
+    {
+      "source": "/contabilidade-na-barra-funda/whastapp",
+      "destination": "/contabilidade-na-barra-funda/whatsapp",
+      "permanent": false
     }
   ],
   "headers": [
@@ -26,6 +36,12 @@
     },
     {
       "source": "/contabilidade-na-barra-funda",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/contabilidade-na-barra-funda/whatsapp",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
