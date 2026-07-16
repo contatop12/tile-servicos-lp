@@ -34,6 +34,13 @@
     } catch (_) { return {}; }
   }
 
+  function resolveCampaignSource(utms, fallback) {
+    return utms.utm_source
+      || ((utms.gclid || utms.gbraid || utms.wbraid) && 'google')
+      || (utms.fbclid && 'meta')
+      || fallback;
+  }
+
   function getAttribution() {
     let attribution = {};
     try { attribution = JSON.parse(sessionStorage.getItem('tile_attribution') || '{}'); } catch (_) {}
@@ -43,7 +50,7 @@
   /* ─── WhatsApp: monta URL com UTM e nome do lead ───────────── */
   function buildWAUrl(baseUrl, nome) {
     const utms = getStoredUTMs();
-    const source = utms.utm_source || (utms.gclid && 'google') || (utms.fbclid && 'meta') || 'anuncio';
+    const source = resolveCampaignSource(utms, 'anuncio');
     try {
       const url = new URL(baseUrl);
       let text;
@@ -199,7 +206,7 @@
   // Monta a mensagem do WhatsApp com os dados do lead
   function buildLeadMessage(d) {
     const utms = getStoredUTMs();
-    const source = utms.utm_source || (utms.gclid && 'google') || (utms.fbclid && 'meta') || 'site';
+    const source = resolveCampaignSource(utms, 'site');
     return 'Olá! Vim do ' + source + ' e quero falar com a Tile Serviços.\n\n'
       + '• Nome: ' + d.nome + '\n'
       + '• Empresa: ' + d.empresa + '\n'
