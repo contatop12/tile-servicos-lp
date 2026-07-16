@@ -30,12 +30,12 @@
   function buildWAUrl(baseUrl, nome) {
     const utms = getStoredUTMs();
     const source = utms.utm_source || (utms.gclid && 'google') || (utms.fbclid && 'meta') || 'anuncio';
-    // Variante /whatsapp (sem formulário): mensagem foca no diagnóstico gratuito
-    const isDiagnostico = window.location.pathname.indexOf('/whatsapp') !== -1;
+    // Variante /whatsapp (sem formulário): mensagem pede para falar com especialista
+    const isDireto = window.location.pathname.indexOf('/whatsapp') !== -1;
     let text = nome
       ? 'Olá, meu nome é ' + nome + '. Vim do anúncio e quero saber mais sobre a contabilidade da Tile'
-      : (isDiagnostico
-        ? 'Olá, vim do anúncio e quero um diagnóstico contábil gratuito'
+      : (isDireto
+        ? 'Olá, vim do anúncio e quero falar com um especialista da Tile'
         : 'Olá, vim do anúncio e quero saber mais sobre a contabilidade da Tile');
     text += ' (' + source + ')';
     try {
