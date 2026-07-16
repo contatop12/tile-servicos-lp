@@ -9,7 +9,7 @@
   /* ─── UTM: captura no load, persiste em sessionStorage ─────── */
   function captureUTMs() {
     const params = new URLSearchParams(window.location.search);
-    const keys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','fbclid'];
+    const keys = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','gbraid','wbraid','fbclid'];
     const stored = {};
     keys.forEach(function (k) {
       const v = params.get(k);
@@ -18,6 +18,14 @@
     if (Object.keys(stored).length) {
       try { sessionStorage.setItem('tile_utms', JSON.stringify(stored)); } catch (_) {}
     }
+    try {
+      if (!sessionStorage.getItem('tile_attribution')) {
+        sessionStorage.setItem('tile_attribution', JSON.stringify({
+          landing_page: window.location.href,
+          referrer: document.referrer || ''
+        }));
+      }
+    } catch (_) {}
   }
 
   function getStoredUTMs() {
@@ -26,20 +34,29 @@
     } catch (_) { return {}; }
   }
 
+  function getAttribution() {
+    let attribution = {};
+    try { attribution = JSON.parse(sessionStorage.getItem('tile_attribution') || '{}'); } catch (_) {}
+    return Object.assign({}, attribution, getStoredUTMs(), { current_url: window.location.href });
+  }
+
   /* ─── WhatsApp: monta URL com UTM e nome do lead ───────────── */
   function buildWAUrl(baseUrl, nome) {
     const utms = getStoredUTMs();
     const source = utms.utm_source || (utms.gclid && 'google') || (utms.fbclid && 'meta') || 'anuncio';
-    // Variante /whatsapp (sem formulário): mensagem pede para falar com especialista
-    const isDireto = window.location.pathname.indexOf('/whatsapp') !== -1;
-    let text = nome
-      ? 'Olá, meu nome é ' + nome + '. Vim do anúncio e quero saber mais sobre a contabilidade da Tile'
-      : (isDireto
-        ? 'Olá, vim do anúncio e quero falar com um especialista da Tile'
-        : 'Olá, vim do anúncio e quero saber mais sobre a contabilidade da Tile');
-    text += ' (' + source + ')';
     try {
       const url = new URL(baseUrl);
+      let text;
+      if (nome) {
+        text = 'Olá, meu nome é ' + nome + '. Vim do anúncio e quero saber mais sobre a contabilidade da Tile';
+      } else {
+        // Preserva a mensagem específica de cada página; só marca a origem
+        text = url.searchParams.get('text') || 'Olá, vim do anúncio e quero saber mais sobre a contabilidade da Tile';
+        text = text.replace('vim do site', 'vim do anúncio');
+      }
+      // LPs especializadas preservam a mensagem aprovada; atribuição segue no dataLayer.
+      const contextualLP = document.body && document.body.getAttribute('data-page-topic');
+      if (!contextualLP) text += ' (' + source + ')';
       url.searchParams.set('text', text);
       return url.toString();
     } catch (_) { return baseUrl; }
@@ -430,7 +447,20 @@
   function initTracking() {
     document.querySelectorAll('.js-wa-link, .js-open-wa-modal').forEach(function (el) {
       el.addEventListener('click', function () {
-        pushEvent('whatsapp_click', { location: el.closest('section') ? el.closest('section').id : 'header' });
+        const location = el.getAttribute('data-cta-location')
+          || (el.closest('section') ? el.closest('section').id : 'header');
+        const pageTopic = document.body.getAttribute('data-page-topic') || '';
+        const details = Object.assign({
+          page_type: pageTopic ? 'landing_page' : '',
+          page_topic: pageTopic,
+          page_path: window.location.pathname,
+          whatsapp_number: '5511911794902',
+          cta_location: location,
+          cta_text: (el.textContent || '').trim(),
+          link_url: el.href || ''
+        }, getAttribution());
+        pushEvent('whatsapp_click', details);
+        pushEvent('cta_click', details);
       });
     });
   }
