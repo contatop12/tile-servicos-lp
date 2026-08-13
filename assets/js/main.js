@@ -128,7 +128,7 @@
   }
 
   /* ─── Modal WA lead capture ──────────────────────────────────── */
-  var WA_BASE = 'https://api.whatsapp.com/send/?phone=5511911794902';
+  var WA_BASE = 'https://api.whatsapp.com/send/?phone=5511910316319';
   var LEAD_WEBHOOK = 'https://n8n.sitespdoze.com.br/webhook/contabilidade';
   var DISQUALIFY_MEI_URL = '/nao-atendemos-mei';
   var PHONE_DDI = '55';
@@ -461,7 +461,7 @@
           page_type: pageTopic ? 'landing_page' : '',
           page_topic: pageTopic,
           page_path: window.location.pathname,
-          whatsapp_number: '5511911794902',
+          whatsapp_number: '5511910316319',
           cta_location: location,
           cta_text: (el.textContent || '').trim(),
           link_url: el.href || ''

@@ -2,13 +2,20 @@ $ErrorActionPreference = 'Stop'
 
 $root = Split-Path -Parent $PSScriptRoot
 $pages = @(
+  'contabilidade-na-barra-funda/index.html'
+  'contabilidade-na-barra-funda/whatsapp/index.html'
   'contabilidade-em-sao-paulo/index.html'
   'contabilidade-em-sao-paulo/whatsapp/index.html'
   'bpo-financeiro-sao-paulo/index.html'
+  'bpo-financeiro-sao-paulo/whatsapp/index.html'
   'consultoria-tributaria-sao-paulo/index.html'
+  'consultoria-tributaria-sao-paulo/whatsapp/index.html'
   'contabilidade-para-medicos-sao-paulo/index.html'
+  'contabilidade-para-medicos-sao-paulo/whatsapp/index.html'
   'contabilidade-para-escolas-sao-paulo/index.html'
+  'contabilidade-para-escolas-sao-paulo/whatsapp/index.html'
   'holding-familiar-sao-paulo/index.html'
+  'holding-familiar-sao-paulo/whatsapp/index.html'
 )
 
 $errors = [System.Collections.Generic.List[string]]::new()
@@ -92,9 +99,32 @@ foreach ($page in $pages) {
     if ($waLinks.Count -lt 8) { Add-Error $page "esperados ao menos 8 CTAs WhatsApp; encontrados $($waLinks.Count)" }
     foreach ($waLink in $waLinks) {
       if ($waLink.Value -notmatch 'data-cta-location="[^"]+"') { Add-Error $page 'CTA WhatsApp sem data-cta-location' }
-      if ($waLink.Value -notmatch '5511911794902') { Add-Error $page 'CTA WhatsApp com número incorreto' }
+      if ($waLink.Value -notmatch '5511910316319') { Add-Error $page 'CTA WhatsApp com número incorreto' }
     }
     if ($html -notmatch '<body[^>]+data-page-topic="[^"]+"') { Add-Error $page 'body sem data-page-topic' }
+  }
+
+  # Contrato da variante /whatsapp: mesma LP, sem modal e sem CTA de telefone,
+  # fora do índice e com canonical apontando para a LP principal.
+  if ($page -match '^(?<slug>[^/]+)/whatsapp/index\.html$') {
+    $slug = $Matches['slug']
+    if ($html -notmatch '<meta\s+name="robots"\s+content="noindex, follow"') {
+      Add-Error $page 'variante /whatsapp precisa ser noindex, follow'
+    }
+    if ($html -notmatch [regex]::Escape("rel=`"canonical`" href=`"https://contabilidade.tileservicos.com.br/$slug`"")) {
+      Add-Error $page 'canonical da variante deve apontar para a LP principal'
+    }
+    if ($html -notmatch [regex]::Escape("og:url`" content=`"https://contabilidade.tileservicos.com.br/$slug/whatsapp`"")) {
+      Add-Error $page 'og:url deve apontar para a própria variante'
+    }
+    if ($html -notmatch [regex]::Escape("page_path: '/$slug/whatsapp'")) {
+      Add-Error $page 'dataLayer page_path incorreto'
+    }
+    if ($html -notmatch [regex]::Escape("href=`"/$slug/whatsapp`"")) {
+      Add-Error $page 'logo do header deve manter o visitante na variante'
+    }
+    if ($html -match 'wa-modal|js-open-wa-modal') { Add-Error $page 'modal de lead não permitido na variante' }
+    if ($html -match 'js-phone-btn') { Add-Error $page 'CTA de telefone não permitido na variante' }
   }
 
   if ($page -notmatch '/whatsapp/' -and $html -match '<meta\s+name="robots"\s+content="index, follow"') {

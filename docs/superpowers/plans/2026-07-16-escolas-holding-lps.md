@@ -11,7 +11,7 @@
 ## Global Constraints
 
 - Rotas: `/contabilidade-para-escolas-sao-paulo` e `/holding-familiar-sao-paulo`.
-- WhatsApp único: `5511911794902`, sem formulário e sem CTA de ligação.
+- WhatsApp único: `5511910316319`, sem formulário e sem CTA de ligação.
 - Mensagens predefinidas exatamente conforme os prompts fornecidos.
 - Não instalar dependências ou alterar o comportamento das páginas existentes.
 - Preservar GTM/GA4, consentimento, UTMs, `gclid`, `gbraid`, `wbraid`, entrada e referenciador.
@@ -48,7 +48,7 @@
 
 - [ ] Criar head completo com title, description, canonical, social cards e JSON-LD coerente.
 - [ ] Criar header/hero e as 18 seções temáticas do prompt, FAQ com 20 perguntas, CTA final, rodapé e botão flutuante.
-- [ ] Usar links `https://wa.me/5511911794902?text=...`, classe `js-wa-link`, `data-page-topic="contabilidade_para_escolas_sao_paulo"` e `data-cta-location` em cada CTA.
+- [ ] Usar links `https://wa.me/5511910316319?text=...`, classe `js-wa-link`, `data-page-topic="contabilidade_para_escolas_sao_paulo"` e `data-cta-location` em cada CTA.
 - [ ] Confirmar inexistência de formulário, link telefônico, dados de alunos, alegação de consultoria pedagógica e promessa tributária/trabalhista.
 - [ ] Executar o validador e corrigir somente falhas desta rota.
 

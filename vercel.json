@@ -19,33 +19,8 @@
       "permanent": false
     },
     {
-      "source": "/contabilidade-na-barra-funda/whastapp",
-      "destination": "/contabilidade-na-barra-funda/whatsapp",
-      "permanent": false
-    },
-    {
-      "source": "/bpo-financeiro-sao-paulo/whatsapp",
-      "destination": "/bpo-financeiro-sao-paulo",
-      "permanent": false
-    },
-    {
-      "source": "/consultoria-tributaria-sao-paulo/whatsapp",
-      "destination": "/consultoria-tributaria-sao-paulo",
-      "permanent": false
-    },
-    {
-      "source": "/contabilidade-para-medicos-sao-paulo/whatsapp",
-      "destination": "/contabilidade-para-medicos-sao-paulo",
-      "permanent": false
-    },
-    {
-      "source": "/contabilidade-para-escolas-sao-paulo/whatsapp",
-      "destination": "/contabilidade-para-escolas-sao-paulo",
-      "permanent": false
-    },
-    {
-      "source": "/holding-familiar-sao-paulo/whatsapp",
-      "destination": "/holding-familiar-sao-paulo",
+      "source": "/:slug/whastapp",
+      "destination": "/:slug/whatsapp",
       "permanent": false
     }
   ],
@@ -78,6 +53,12 @@
       ]
     },
     {
+      "source": "/contabilidade-para-escolas-sao-paulo/whatsapp",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
       "source": "/contabilidade-em-sao-paulo",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
@@ -96,7 +77,19 @@
       ]
     },
     {
+      "source": "/bpo-financeiro-sao-paulo/whatsapp",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
       "source": "/consultoria-tributaria-sao-paulo",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/consultoria-tributaria-sao-paulo/whatsapp",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
@@ -108,7 +101,19 @@
       ]
     },
     {
+      "source": "/contabilidade-para-medicos-sao-paulo/whatsapp",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
       "source": "/holding-familiar-sao-paulo",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/holding-familiar-sao-paulo/whatsapp",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
