@@ -32,14 +32,26 @@
   </url>
   <url>
     <loc>https://contabilidade.tileservicos.com.br/contabilidade-para-escolas-sao-paulo</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://contabilidade.tileservicos.com.br/holding-familiar-sao-paulo</loc>
-    <lastmod>2026-07-16</lastmod>
+    <lastmod>2026-08-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://contabilidade.tileservicos.com.br/politica-de-privacidade</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://contabilidade.tileservicos.com.br/termos-de-uso</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>

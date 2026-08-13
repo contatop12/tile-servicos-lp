@@ -135,7 +135,50 @@ foreach ($page in $pages) {
   }
 }
 
-Write-Output "Páginas verificadas: $($pages.Count)"
+# ── Páginas legais: checagem mais leve (sem CTA, sem JSON-LD de serviço) ──
+$legalPages = @(
+  'politica-de-privacidade/index.html'
+  'termos-de-uso/index.html'
+)
+
+foreach ($page in $legalPages) {
+  $path = Join-Path $root $page
+  if (-not (Test-Path -LiteralPath $path)) {
+    Add-Error $page 'arquivo ausente'
+    continue
+  }
+
+  $html = Get-Content -LiteralPath $path -Raw -Encoding UTF8
+
+  $h1Count = ([regex]::Matches($html, '<h1\b', 'IgnoreCase')).Count
+  if ($h1Count -ne 1) { Add-Error $page "esperado 1 H1; encontrado $h1Count" }
+
+  foreach ($required in @('canonical', 'og:title', 'og:url', 'twitter:card', '<title>', 'name="description"')) {
+    if ($html -notmatch [regex]::Escape($required)) { Add-Error $page "metadado ausente: $required" }
+  }
+
+  $ids = [regex]::Matches($html, '\sid="([^"]+)"', 'IgnoreCase') | ForEach-Object { $_.Groups[1].Value }
+  foreach ($anchor in ([regex]::Matches($html, 'href="#([^"#]+)"', 'IgnoreCase') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)) {
+    if ($ids -notcontains $anchor) { Add-Error $page "âncora sem destino: #$anchor" }
+  }
+
+  if ($html -match 'href="#"') { Add-Error $page 'link placeholder href="#"' }
+
+  $canonicalMatch = [regex]::Match($html, '<link\s+rel="canonical"\s+href="([^"]+)"', 'IgnoreCase')
+  if ($canonicalMatch.Success -and $sitemap -notmatch [regex]::Escape($canonicalMatch.Groups[1].Value)) {
+    Add-Error $page 'canonical ausente do sitemap.xml'
+  }
+}
+
+# Toda página do site precisa apontar para as políticas, nunca para href="#"
+foreach ($page in ($pages + $legalPages + @('nao-atendemos-mei/index.html'))) {
+  $path = Join-Path $root $page
+  if (-not (Test-Path -LiteralPath $path)) { continue }
+  $html = Get-Content -LiteralPath $path -Raw -Encoding UTF8
+  if ($html -match 'href="#"') { Add-Error $page 'link placeholder href="#" (aponte para /politica-de-privacidade ou /termos-de-uso)' }
+}
+
+Write-Output "Páginas verificadas: $($pages.Count + $legalPages.Count)"
 Write-Output "Erros: $($errors.Count)"
 $errors | ForEach-Object { Write-Output "ERRO $_" }
 Write-Output "Avisos: $($warnings.Count)"
